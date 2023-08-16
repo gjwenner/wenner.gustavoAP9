@@ -4,7 +4,10 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
 
 @Entity
 public class Client {
@@ -18,6 +21,14 @@ public class Client {
 
     @OneToMany(mappedBy = "clientId", fetch =FetchType.EAGER )
     private Set<Account> accounts = new HashSet<>();
+
+    @OneToMany(mappedBy = "loan", fetch =FetchType.EAGER  )
+    private Set<ClientLoan> clientLoans = new HashSet<>();
+
+    //public List<Loan> getLoan() {
+        //return Loans.stream().map(clientLoan -> clientLoan.getLoan()).collect(toList());
+    //}
+
 
     public Client() {
     }
@@ -64,9 +75,17 @@ public class Client {
         this.accounts = accounts;
     }
 
+    public Set<ClientLoan> getLoans() { return clientLoans; }
+
+
     public void addAccount(Account account){
         account.setClientId(this);
         accounts.add(account);
 
+    }
+
+    public void addClientLoan(ClientLoan clientLoan){
+        clientLoan.setClientId(this);
+    //    loans.add(clientLoans);
     }
 }

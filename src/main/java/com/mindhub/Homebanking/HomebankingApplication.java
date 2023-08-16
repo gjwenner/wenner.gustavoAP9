@@ -1,17 +1,14 @@
 package com.mindhub.Homebanking;
 
-import com.mindhub.Homebanking.models.Account;
-import com.mindhub.Homebanking.models.Client;
-import com.mindhub.Homebanking.models.Transaction;
-import com.mindhub.Homebanking.repositories.AccountRepository;
-import com.mindhub.Homebanking.repositories.ClientRepository;
-import com.mindhub.Homebanking.repositories.TransactionRepository;
+import com.mindhub.Homebanking.models.*;
+import com.mindhub.Homebanking.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.mindhub.Homebanking.models.TransactionType.CREDIT;
 import static com.mindhub.Homebanking.models.TransactionType.DEBIT;
@@ -25,11 +22,10 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) {
 		return (args) ->{
-			Client client1 = new Client("Gustavo","Wenner","gjwenner@gmail.com");
-			Client client2 = new Client("Melba","Morel","melba@gmail.com");
-
+			Client client1 = new Client("Melba","Morel","melba@gmail.com");
+			Client client2 = new Client("Gustavo","Wenner","gjwenner@gmail.com");
 
 			clientRepository.save(client1);
 			clientRepository.save(client2);
@@ -54,9 +50,20 @@ public class HomebankingApplication {
 
 			transactionRepository.save(newTransaction1);
 			transactionRepository.save(newTransaction2);
+
+			Loan newLoan1 = new Loan ("Hipotecario", 500000.00, List.of(12,24,36,48,60));
+			Loan newLoan2 = new Loan ("Personal", 100000.00, List.of(6,12,24));
+			Loan newLoan3 = new Loan ("Automotriz", 300000.00, List.of(6,12,24,36));
+
+			loanRepository.save(newLoan1);
+			loanRepository.save(newLoan2);
+			loanRepository.save(newLoan3);
+
+
 		};
-
-
 	}
 
 }
+
+
+

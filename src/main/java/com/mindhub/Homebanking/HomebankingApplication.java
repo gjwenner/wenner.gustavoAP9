@@ -59,7 +59,6 @@ public class HomebankingApplication {
 			loanRepository.save(newLoan2);
 			loanRepository.save(newLoan3);
 
-
 		};
 	}
 

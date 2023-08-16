@@ -39,6 +39,17 @@ public class Client {
         this.email = email;
     }
 
+    public Set<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(Set<Card> cards) {
+        this.cards = cards;
+    }
+
+    @OneToMany(mappedBy = "clientId", fetch =FetchType.EAGER )
+    private Set<Card> cards = new HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -88,4 +99,10 @@ public class Client {
         clientLoan.setClientId(this);
     //    loans.add(clientLoans);
     }
+
+    public void addCard(Card cards){
+        card.setClientId(this);
+        cards.add(card);
+    }
+
 }

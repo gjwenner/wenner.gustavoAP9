@@ -11,20 +11,23 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long Id;
-    private String cardHolder;
+    private String cardholder;
     private CardType type; // se usa un enum propio
     private CardColor color; // se usa un enum propio
     private String cardNumber;
-    private Short cvv;
+    private int cvv;
     private LocalDate fromDate;
     private LocalDate thruDate;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id")
+    private Client client;
 
     public Card() {
     }
 
-    public Card(Long id, String cardholder, CardType type, CardColor color, String cardNumber, Short cvv, LocalDate fromDate, LocalDate thruDate, Client clientId) {
-        this.Id = id;
-        this.cardHolder = cardHolder;
+    public Card(String cardholder, CardType type, CardColor color, String cardNumber, int cvv, LocalDate fromDate, LocalDate thruDate) {
+        this.cardholder = cardholder;
         this.type = type;
         this.color = color;
         this.cardNumber = cardNumber;
@@ -34,10 +37,6 @@ public class Card {
 
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_id")
-    private Client clientId;
-
     public Long getId() {
         return Id;
     }
@@ -46,12 +45,12 @@ public class Card {
         Id = id;
     }
 
-    public String getCardHolder() {
-        return cardHolder;
+    public String getCardholder() {
+        return cardholder;
     }
 
     public void setCardHolder(String cardHolder) {
-        this.cardHolder = cardHolder;
+        this.cardholder = cardholder;
     }
 
     public CardType getType() {
@@ -78,11 +77,11 @@ public class Card {
         this.cardNumber = cardNumber;
     }
 
-    public Short getCvv() {
+    public int getCvv() {
         return cvv;
     }
 
-    public void setCvv(Short cvv) {
+    public void setCvv(int cvv) {
         this.cvv = cvv;
     }
 
@@ -102,11 +101,12 @@ public class Card {
         this.thruDate = thruDate;
     }
 
-    public Client getClientId() {
-        return clientId;
+    public Client getClient() {
+        return client;
     }
 
-    public void setClientId(Client clientId) {
-        this.clientId = clientId;
+    public void setClient(Client client) {
+        this.client = client;
     }
+
 }

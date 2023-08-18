@@ -27,7 +27,7 @@ public class Loan {
     private Set<ClientLoan> clientLoans = new HashSet<>();
 
     public List<Client> getClients() {
-        return clientLoans.stream().map(clientLoan -> clientLoan.getClientId()).collect(toList());
+        return clientLoans.stream().map(clientLoan -> clientLoan.getClient()).collect(toList());
     }
 
     public Loan() {

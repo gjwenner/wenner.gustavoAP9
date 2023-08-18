@@ -21,22 +21,16 @@ public class ClientController {
 
     @GetMapping("/clients")
     public List<ClientDTO> getClients(){
-        List<Client> allClients = clientRepository.findAll();
-
-        List<ClientDTO> convertedList;
-        convertedList = allClients
+        return clientRepository.findAll()
                 .stream()
                 .map(currentclient -> new ClientDTO(currentclient))
                 .collect(Collectors.toList());
 
-        return convertedList;
     }
 
 
     @GetMapping("/clients/{id}")
-    public ClientDTO getClientsById(@PathVariable Long id){
-        Optional<Client> client = clientRepository.findById(id);
-        return new ClientDTO(client.get());
+    public ClientDTO getClientsById(@PathVariable Long id){ return new ClientDTO(clientRepository.findById(id).orElse(null));
     }
 
 }

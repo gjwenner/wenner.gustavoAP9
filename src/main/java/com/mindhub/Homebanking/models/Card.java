@@ -11,7 +11,7 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long Id;
-    private String cardholder;
+    private String cardHolder;
     private CardType type; // se usa un enum propio
     private CardColor color; // se usa un enum propio
     private String cardNumber;
@@ -27,7 +27,7 @@ public class Card {
     }
 
     public Card(String cardholder, CardType type, CardColor color, String cardNumber, int cvv, LocalDate fromDate, LocalDate thruDate) {
-        this.cardholder = cardholder;
+        this.cardHolder = cardHolder;
         this.type = type;
         this.color = color;
         this.cardNumber = cardNumber;
@@ -46,11 +46,11 @@ public class Card {
     }
 
     public String getCardholder() {
-        return cardholder;
+        return cardHolder;
     }
 
     public void setCardHolder(String cardHolder) {
-        this.cardholder = cardholder;
+        this.cardHolder = cardHolder;
     }
 
     public CardType getType() {

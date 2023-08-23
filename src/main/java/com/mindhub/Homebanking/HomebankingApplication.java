@@ -62,16 +62,16 @@ public class HomebankingApplication {
 			loanRepository.save(newLoan2);
 			loanRepository.save(newLoan3);
 
-			ClientLoan clientLoan1 = new ClientLoan(60, 400.000, client1, newLoan1);
+			ClientLoan clientLoan1 = new ClientLoan(60, 400000.00, client1, newLoan1);
 			clientLoanRepository.save(clientLoan1);
 
-			ClientLoan clientLoan2 = new ClientLoan(12, 50.000, client1, newLoan2);
+			ClientLoan clientLoan2 = new ClientLoan(12, 50000.00, client1, newLoan2);
 			clientLoanRepository.save(clientLoan2);
 
-			ClientLoan clientLoan3 = new ClientLoan(24, 100.000, client2, newLoan2);
+			ClientLoan clientLoan3 = new ClientLoan(24, 100000.00, client2, newLoan2);
 			clientLoanRepository.save(clientLoan3);
 
-			ClientLoan clientLoan4 = new ClientLoan(36, 200.000, client2, newLoan3);
+			ClientLoan clientLoan4 = new ClientLoan(36, 200000.00, client2, newLoan3);
 			clientLoanRepository.save(clientLoan4);
 
 			LocalDate from =  LocalDate.now();

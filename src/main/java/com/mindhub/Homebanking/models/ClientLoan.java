@@ -30,6 +30,7 @@ public class ClientLoan {
         this.amount = amount;
         this.client = client;
         this.loan = loan;
+
     }
 
     public Long getId() {
@@ -66,6 +67,4 @@ public class ClientLoan {
     public void setLoan(Loan loan) {
         this.loan = loan;
     }
-
-
 }

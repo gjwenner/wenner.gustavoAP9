@@ -6,6 +6,7 @@ import com.mindhub.Homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.mindhub.Homebanking.models.Client;
@@ -29,10 +30,8 @@ public class ClientController {
 
     @GetMapping("/clients")
     public List<ClientDTO> getClients(){
-        return clientRepository.findAll()
-                .stream()
-                .map(currentclient -> new ClientDTO(currentclient))
-                .collect(Collectors.toList());
+        return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
+
 
     }
     @GetMapping("/clients/{id}")
@@ -42,8 +41,8 @@ public class ClientController {
     
     //Get /api/client/current JSon con los datos del cliente autenticado
     @GetMapping("/clients/current")
-    public ClientDTO getCurrentClient(){
-        return null;
+    public ClientDTO getAll(Authentication authentication){
+        return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
     }
 
     //Post para crear el cliente

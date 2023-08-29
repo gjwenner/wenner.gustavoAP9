@@ -2,8 +2,7 @@ package com.mindhub.Homebanking.controllers;
 
 import com.mindhub.Homebanking.dtos.AccountDTO;
 import com.mindhub.Homebanking.dtos.CardDTO;
-import com.mindhub.Homebanking.models.Account;
-import com.mindhub.Homebanking.models.Client;
+import com.mindhub.Homebanking.models.*;
 import com.mindhub.Homebanking.repositories.AccountRepository;
 import com.mindhub.Homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -122,4 +123,30 @@ public class AccountController {
     }
 
 
-}
+    @Transactional
+    @PostMapping("/transactions")
+    public ResponseEntity<?> createTransfer(@RequestParam Double amount, @RequestParam String ctaOrigen,
+                                            @RequestParam String ctaDestino, @RequestParam String despcription,
+                                            Authentication authentication) {
+        // Obtener información del cliente autenticado
+        Client current = clientRepository.findByEmail(authentication.getName());
+        // comprobar que los parmetros no lleguen del Front vacios/sin importe
+        if(amount <= 0 || despcription.isEmpty()) {return new ResponseEntity<>
+                ("El monto o la descripcion estan vacios", HttpStatus.FORBIDDEN);}
+        if(ctaOrigen.equals(ctaDestino))// Comprobar que la cuenta de Debito y Credito no sean la misma
+        {return new ResponseEntity<>( "las cuentas de origen y destino no pueden ser las mismas", HttpStatus.FORBIDDEN);
+        }
+        Set<Account> accounts = current.getAccounts();// Comprobar que la cuenta es del cliente logueado
+        if(accounts.stream().filter(account -> account.getNumber().equals(ctaOrigen)).collect(toList()).isEmpty())
+        { return new ResponseEntity<>("La cuenta de Origen no pertence al client", HttpStatus.FORBIDDEN ); }
+        // Comprobar que la cuenta de origen tenga Saldo Suficiente
+
+        // Crear la Transacion por debito
+        Transaction transaction = new Transaction("DEBIT","ctaOrigen", amount,despcription, LocalDate.now());
+
+        // Crear la transacion por credito
+        Transaction transaction = new Transaction("CREDIT","ctaDESTINO", amount,despcription, LocalDate.now());
+
+        }
+
+    }

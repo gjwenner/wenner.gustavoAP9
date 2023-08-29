@@ -2,7 +2,6 @@ package com.mindhub.Homebanking.controllers;
 
 
 import com.mindhub.Homebanking.dtos.CardDTO;
-import com.mindhub.Homebanking.dtos.ClientDTO;
 import com.mindhub.Homebanking.models.Card;
 import com.mindhub.Homebanking.models.CardColor;
 import com.mindhub.Homebanking.models.CardType;
@@ -103,17 +102,28 @@ public class CardController {
     @PostMapping("/clients/current/cards")
     public ResponseEntity<Object> createCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor,
                                               Authentication authentication) {
-        Client client = clientRepository.findByEmail(authentication.getName());
-        Set<Card> cards = client.getCards();//Cards del cliente logueado
+        Client current = clientRepository.findByEmail(authentication.getName());
+        Set<Card> cards = current.getCards();//Cards del cliente logueado
         if (!cards.stream().filter(card -> card.getType().equals(cardType)).//Filtro la tarjeta del cliente por typo
                             filter(card -> card.getColor().equals(cardColor)).//Filtro las card que me quedaron por color
                             collect(toList()).isEmpty()){
             return new ResponseEntity<>("You have a credit Card "+cardType+" "+cardColor, HttpStatus.FORBIDDEN );
         }
 
+    //Crear el Objeto Card
+        Card card = new Card(current.getFirstName()+" "+current.getLastName(),
+                cardType, cardColor, cardNumberG(), CVV() , LocalDate.now(), LocalDateTime.now().plusYears(5));
 
-        cardRepository.save(new Card(client.getFirstName()+" "+client.getLastName(),
-                cardType, cardColor, cardNumberG(), CVV() , LocalDate.now(), LocalDateTime.now().plusYears(5)));
+    //Asignar la Tarjeta al cliente
+        current.addCard(card);
+
+    //Guardar la tarjeta en Base de Datos
+        cardRepository.save(card);
+
+    //Retornar Respuesta
+
+        //cardRepository.save(new Card(client.getFirstName()+" "+client.getLastName(),
+        //        cardType, cardColor, cardNumberG(), CVV() , LocalDate.now(), LocalDateTime.now().plusYears(5)));
         return new ResponseEntity<>("201 created",HttpStatus.CREATED);
 
     }

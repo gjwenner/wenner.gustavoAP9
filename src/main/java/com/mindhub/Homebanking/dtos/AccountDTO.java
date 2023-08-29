@@ -10,15 +10,18 @@ import com.mindhub.Homebanking.models.Account;
 public class AccountDTO {
     private Long id;
     private String number;
-    private LocalDate creationDate;
+    private LocalDate Date;
     private Double balance;
 
     private Set<TransactionDTO> transactions = new HashSet<>();
 
+    public AccountDTO() {
+    }
+
     public AccountDTO(Account account) {
         this.id = account.getId();
         this.number = account.getNumber();
-        this.creationDate = account.getCreationDate();
+        this.Date = account.getDate();
         this.balance = account.getBalance();
         this.transactions = account.getTransaction()
                 .stream()
@@ -33,8 +36,8 @@ public class AccountDTO {
     public String getNumber() {
         return number;
     }
-    public LocalDate getCreationDate() {
-        return creationDate;
+    public LocalDate getDate() {
+        return Date;
     }
     public Double getBalance() {
         return balance;

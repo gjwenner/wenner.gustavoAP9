@@ -7,4 +7,10 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
 public interface AccountRepository extends JpaRepository<Account, Long> {
+
+    Account findByNumber(String number);
+
+    //default boolean existByNumber(String number) {
+    //    return false;
+    //}
 }

@@ -6,6 +6,7 @@ import com.mindhub.Homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +21,16 @@ public class ClientController {
 
     @Autowired
     private ClientRepository clientRepository;
-
     @Autowired
     private AccountRepository accountRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private AccountController accountController;
 
     @GetMapping("/clients")
     public List<ClientDTO> getClients(){
         return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
-
-
     }
     @GetMapping("/clients/{id}")
     public ClientDTO getClientsById(@PathVariable Long id){ return new ClientDTO(clientRepository.findById(id).orElse(null));
@@ -64,8 +62,12 @@ public class ClientController {
             return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
         }
 
-        clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
+        //clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
+        Client newClient = new Client(firstName, lastName, email, passwordEncoder.encode(password));
+        clientRepository.save(newClient);
+        accountController.createAccount(new UsernamePasswordAuthenticationToken(newClient.getEmail(), newClient.getPassword ()));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 
 }

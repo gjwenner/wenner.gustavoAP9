@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.mindhub.Homebanking.models.TransactionType.CREDIT;
@@ -33,11 +34,11 @@ public class HomebankingApplication {
 			clientRepository.save(client1);
 			clientRepository.save(client2);
 
-			//LocalDate today =  LocalDate.now();
-			//LocalDate tomorrow = today.plusDays(1);
+			LocalDate today =  LocalDate.now();
+			LocalDate tomorrow = today.plusDays(1);
 
-			Account newAccount1 = new Account("VIN001", LocalDate.now(), 5000.00);
-			Account newAccount2 = new Account("VIN002", LocalDate.now().plusDays(1), 7500.00);
+			Account newAccount1 = new Account("VIN0000001", today, 5000.00);
+			Account newAccount2 = new Account("VIN0000002", tomorrow, 7500.00);
 
 			client1.addAccount(newAccount1);
 			client1.addAccount(newAccount2);
@@ -71,11 +72,11 @@ public class HomebankingApplication {
 			ClientLoan clientLoan3 = new ClientLoan(24, 100000.00, client2, newLoan2);
 			clientLoanRepository.save(clientLoan3);
 
-			ClientLoan clientLoan4 = new ClientLoan(36, 200000.00, client2, newLoan3);
-			clientLoanRepository.save(clientLoan4);
+			//ClientLoan clientLoan4 = new ClientLoan(36, 200000.00, client2, newLoan3);
+			//clientLoanRepository.save(clientLoan4);
 
 			LocalDate from =  LocalDate.now();
-			LocalDate thru = from.plusYears(5);
+			LocalDateTime thru = LocalDateTime.now().plusYears(5);
 
 			Card card1 = new Card(client1.getFirstName()+" "+ client1.getLastName(), CardType.CREDIT, CardColor.GOLD,"5832-5248-2365", 541, from,thru);
 			Card card2 = new Card(client1.getFirstName()+" "+ client1.getLastName(), CardType.CREDIT, CardColor.SILVER,"4823-4887-6954", 103, from,thru);

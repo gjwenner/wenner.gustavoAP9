@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.mindhub.Homebanking.models.TransactionType.CREDIT;
+import static com.mindhub.Homebanking.models.TransactionType.DEBIT;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -120,33 +122,6 @@ public class AccountController {
 
         // Retornar respuesta "201 creada"
         return new ResponseEntity<>("201 creada", HttpStatus.CREATED);
+        }
     }
 
-
-    @Transactional
-    @PostMapping("/transactions")
-    public ResponseEntity<?> createTransfer(@RequestParam Double amount, @RequestParam String ctaOrigen,
-                                            @RequestParam String ctaDestino, @RequestParam String despcription,
-                                            Authentication authentication) {
-        // Obtener información del cliente autenticado
-        Client current = clientRepository.findByEmail(authentication.getName());
-        // comprobar que los parmetros no lleguen del Front vacios/sin importe
-        if(amount <= 0 || despcription.isEmpty()) {return new ResponseEntity<>
-                ("El monto o la descripcion estan vacios", HttpStatus.FORBIDDEN);}
-        if(ctaOrigen.equals(ctaDestino))// Comprobar que la cuenta de Debito y Credito no sean la misma
-        {return new ResponseEntity<>( "las cuentas de origen y destino no pueden ser las mismas", HttpStatus.FORBIDDEN);
-        }
-        Set<Account> accounts = current.getAccounts();// Comprobar que la cuenta es del cliente logueado
-        if(accounts.stream().filter(account -> account.getNumber().equals(ctaOrigen)).collect(toList()).isEmpty())
-        { return new ResponseEntity<>("La cuenta de Origen no pertence al client", HttpStatus.FORBIDDEN ); }
-        // Comprobar que la cuenta de origen tenga Saldo Suficiente
-
-        // Crear la Transacion por debito
-        Transaction transaction = new Transaction("DEBIT","ctaOrigen", amount,despcription, LocalDate.now());
-
-        // Crear la transacion por credito
-        Transaction transaction = new Transaction("CREDIT","ctaDESTINO", amount,despcription, LocalDate.now());
-
-        }
-
-    }

@@ -39,15 +39,20 @@ public class HomebankingApplication {
 
 			Account newAccount1 = new Account("VIN0000001", today, 5000.00);
 			Account newAccount2 = new Account("VIN0000002", tomorrow, 7500.00);
+			Account newAccount3 = new Account("VIN0000003", tomorrow, 10000.00);
+			Account newAccount4 = new Account("VIN0000004", tomorrow, 15500.00);
 
 			client1.addAccount(newAccount1);
 			client1.addAccount(newAccount2);
-
+			client2.addAccount(newAccount3);
+			client2.addAccount(newAccount4);
 			accountRepository.save(newAccount1);
 			accountRepository.save(newAccount2);
+			accountRepository.save(newAccount3);
+			accountRepository.save(newAccount4);
 
 			Transaction newTransaction1 = new Transaction(CREDIT, 200.00, "Deposit", LocalDate.now());
-			Transaction newTransaction2 = new Transaction(DEBIT, 100.00, "Payment", LocalDate.now().plusDays(1));
+			Transaction newTransaction2 = new Transaction(DEBIT, -100.00, "Payment", LocalDate.now().plusDays(1));
 
 			newAccount1.addTransaction(newTransaction1);
 			newAccount1.addTransaction(newTransaction2);

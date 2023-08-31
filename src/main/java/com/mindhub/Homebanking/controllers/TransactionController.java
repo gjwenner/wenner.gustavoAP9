@@ -38,7 +38,7 @@ public class TransactionController {
     private ClientRepository clientRepository;
 
 
-    @GetMapping("/transaction")
+    @GetMapping("/transactions")
     public List<TransactionDTO> getTransactions(){
         List<Transaction> allTransactions = transactionRepository.findAll();
 
@@ -51,7 +51,7 @@ public class TransactionController {
         return convertedList;
     }
 
-    @GetMapping("/transaction/{id}")
+    @GetMapping("/transactions/{id}")
     public TransactionDTO getTransactionsById(@PathVariable Long id){
         Optional<Transaction> transaction = transactionRepository.findById(id);
         return new TransactionDTO(transaction.get());
@@ -65,6 +65,8 @@ public class TransactionController {
                                             Authentication authentication) {
         // Obtener información del cliente autenticado
         Client current = clientRepository.findByEmail(authentication.getName());
+        Account debitAccount = accountRepository.findByNumber(fromAccountNumber);
+        Account creditAccount = accountRepository.findByNumber(toAccountNumber);
 
         // comprobar que los parmetros no lleguen del Front vacios/sin importe
         if(amount <= 0 || description.isEmpty()) {return new ResponseEntity<>
@@ -79,7 +81,7 @@ public class TransactionController {
         if(accounts.stream().filter(account -> account.getNumber().equals(fromAccountNumber)).collect(toList()).isEmpty())
         { return new ResponseEntity<>("La cuenta de Origen no pertence al client", HttpStatus.FORBIDDEN ); }
         // Comprobar que la cuenta de origen tenga Saldo Suficiente
-        if(amount > accountRepository.findByNumber(fromAccountNumber).getBalance()){
+        if(amount > debitAccount.getBalance()){
             return new ResponseEntity<>("El Saldo de sa cuenta es insuficiente para transferir", HttpStatus.FORBIDDEN);
         }
 
@@ -87,19 +89,19 @@ public class TransactionController {
         // Crear la Transacion por debito
         Transaction transaction1 = new Transaction(DEBIT, amount * -1,"despcription", LocalDate.now());
         transactionRepository.save(transaction1);
-        accountRepository.findByNumber(fromAccountNumber).addTransaction(transaction1);
+        debitAccount.addTransaction(transaction1);
 
-        Double balanceFromAccount = accountRepository.findByNumber(fromAccountNumber).getBalance();
-        accountRepository.findByNumber(fromAccountNumber).setBalance(balanceFromAccount-amount);
+        Double balanceFromAccount = debitAccount.getBalance();
+        debitAccount.setBalance(balanceFromAccount-amount);
 
 
         // Crear la transacion por credito
         Transaction transaction2 = new Transaction(CREDIT, amount,"description", LocalDate.now());
         transactionRepository.save(transaction2);
-        accountRepository.findByNumber(toAccountNumber).addTransaction(transaction2);
+        creditAccount.addTransaction(transaction2);
 
-        Double balanceToAccount = accountRepository.findByNumber(toAccountNumber).getBalance();
-        accountRepository.findByNumber(toAccountNumber).setBalance(balanceToAccount+amount);
+        Double balanceToAccount = creditAccount.getBalance();
+        creditAccount.setBalance(balanceToAccount+amount);
 
         return new ResponseEntity<>("201 created", HttpStatus.CREATED );
     }

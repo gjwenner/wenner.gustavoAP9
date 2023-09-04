@@ -3,6 +3,7 @@ package com.mindhub.Homebanking.controllers;
 import com.mindhub.Homebanking.dtos.ClientDTO;
 import com.mindhub.Homebanking.repositories.AccountRepository;
 import com.mindhub.Homebanking.repositories.ClientRepository;
+import com.mindhub.Homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,12 @@ public class ClientController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AccountController accountController;
+    @Autowired
+    private ClientService clientService;
 
     @GetMapping("/clients")
     public List<ClientDTO> getClients(){
-        return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
+        return clientService.getClientDTO();
     }
     @GetMapping("/clients/{id}")
     public ClientDTO getClientsById(@PathVariable Long id){ return new ClientDTO(clientRepository.findById(id).orElse(null));

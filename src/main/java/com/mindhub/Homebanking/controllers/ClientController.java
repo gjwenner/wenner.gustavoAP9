@@ -21,10 +21,6 @@ import java.util.stream.Collectors;
 public class ClientController {
 
     @Autowired
-    private ClientRepository clientRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AccountController accountController;
@@ -32,18 +28,19 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping("/clients")
-    public List<ClientDTO> getClients(){
-        return clientService.getClientDTO();
+     public List<ClientDTO> getClients(){
+        return clientService.getClientsDTO();
     }
+
     @GetMapping("/clients/{id}")
-    public ClientDTO getClientsById(@PathVariable Long id){ return new ClientDTO(clientRepository.findById(id).orElse(null));
+    public ClientDTO getClientsById(@PathVariable Long id){ return clientService.getClientDTO(id);
     }
     
     
     //Get /api/client/current JSon con los datos del cliente autenticado
     @GetMapping("/clients/current")
-    public ClientDTO getAll(Authentication authentication){
-        return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
+    public ClientDTO getCurrent(Authentication authentication){
+        return new ClientDTO( clientService.getCurrent(authentication.getName()));
     }
 
     //Post para crear el cliente
@@ -61,13 +58,13 @@ public class ClientController {
             return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
         }
 
-        if (clientRepository.findByEmail(email) !=  null) {
+        if (clientService.findByEmail(email) !=  null) {
             return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
         }
 
         //clientRepository.save(new Client(firstName, lastName, email, passwordEncoder.encode(password)));
         Client newClient = new Client(firstName, lastName, email, passwordEncoder.encode(password));
-        clientRepository.save(newClient);
+        clientService.newClient(newClient);
         accountController.createAccount(new UsernamePasswordAuthenticationToken(newClient.getEmail(), newClient.getPassword ()));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

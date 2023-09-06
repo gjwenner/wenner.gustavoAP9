@@ -6,8 +6,11 @@ import com.mindhub.Homebanking.models.Card;
 import com.mindhub.Homebanking.models.CardColor;
 import com.mindhub.Homebanking.models.CardType;
 import com.mindhub.Homebanking.models.Client;
+import com.mindhub.Homebanking.dtos.ClientDTO;
 import com.mindhub.Homebanking.repositories.CardRepository;
 import com.mindhub.Homebanking.repositories.ClientRepository;
+import com.mindhub.Homebanking.services.CardService;
+import com.mindhub.Homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,25 +31,15 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("/api")
 public class CardController {
     @Autowired
-    private CardRepository cardRepository;
+    private CardService cardService;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @GetMapping("/cards")
-    public List<CardDTO> getCards(){
-        List<Card>  allCards = cardRepository.findAll();
-        List<CardDTO> convertedList;
-        convertedList = allCards
-                .stream()
-                .map(currentcard -> new CardDTO(currentcard))
-                .collect(toList());
-        return convertedList;
-    }
-
+    public List<CardDTO> getCards(){ return cardService.getCardDTO();}
     @GetMapping("/cards/{id}")
-    public CardDTO getCardsById(@PathVariable Long id){return new CardDTO(cardRepository.findById(id).orElse(null));
-    }
+    public CardDTO getCardsById(@PathVariable Long id){return cardService.getCardDTO(id);}
 
     //@GetMapping("/clients/current/cards")
     //public List<CardDTO> getCards(Authentication authentication) {
@@ -57,7 +50,7 @@ public class CardController {
     @GetMapping("/clients/current/cards")
     public ResponseEntity<?> getCards(Authentication authentication) {
         // Buscar el cliente en la base de datos
-        Client current = clientRepository.findByEmail(authentication.getName());
+        Client current = this.clientService.getCurrent(authentication.getName());
         if (current == null) {
             // Si no se encuentra el cliente, retornar un error 404 (Not Found)
             return ResponseEntity.notFound().build();
@@ -102,7 +95,7 @@ public class CardController {
     @PostMapping("/clients/current/cards")
     public ResponseEntity<Object> createCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor,
                                               Authentication authentication) {
-        Client current = clientRepository.findByEmail(authentication.getName());
+        Client current = clientService.getCurrent(authentication.getName());
         Set<Card> cards = current.getCards();//Cards del cliente logueado
         if (!cards.stream().filter(card -> card.getType().equals(cardType)).//Filtro la tarjeta del cliente por typo
                             filter(card -> card.getColor().equals(cardColor)).//Filtro las card que me quedaron por color
@@ -118,7 +111,7 @@ public class CardController {
         current.addCard(card);
 
     //Guardar la tarjeta en Base de Datos
-        cardRepository.save(card);
+        cardService.newCard(card);
 
     //Retornar Respuesta
 

@@ -29,6 +29,7 @@ public class WebAuthorization {
                 .antMatchers(HttpMethod.POST.GET,"/api/clients/current/accounts").hasAnyAuthority("CLIENT", "ADMIN")
                 .antMatchers(HttpMethod.POST.GET,"/api/clients/current/cards").hasAnyAuthority("CLIENT", "ADMIN")
                 .antMatchers(HttpMethod.POST.GET,"/api/transactions").hasAnyAuthority("CLIENT", "ADMIN")
+                .antMatchers(HttpMethod.POST.GET,"/api/loans").hasAnyAuthority("CLIENT", "ADMIN")
                 .antMatchers("/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/web/**").hasAnyAuthority("CLIENT", "ADMIN");
                 //.anyRequest().denyAll();

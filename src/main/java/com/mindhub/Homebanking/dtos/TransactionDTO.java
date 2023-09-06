@@ -9,14 +9,14 @@ public class TransactionDTO {
     private Long id;
     private TransactionType type;
     private Double amount;
-    private String descriptions;
+    private String description;
     private LocalDate date;
 
     public TransactionDTO(Transaction transaction) {
         this.id = transaction.getId();
         this.type = transaction.getType();
         this.amount = transaction.getAmount();
-        this.descriptions = transaction.getDescriptions();
+        this.description = transaction.getDescriptions();
         this.date = transaction.getDate();
     }
 
@@ -33,7 +33,7 @@ public class TransactionDTO {
     }
 
     public String getDescriptions() {
-        return descriptions;
+        return description;
     }
 
     public LocalDate getDate() {

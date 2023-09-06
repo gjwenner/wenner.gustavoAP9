@@ -7,6 +7,9 @@ import com.mindhub.Homebanking.models.Transaction;
 import com.mindhub.Homebanking.repositories.AccountRepository;
 import com.mindhub.Homebanking.repositories.ClientRepository;
 import com.mindhub.Homebanking.repositories.TransactionRepository;
+import com.mindhub.Homebanking.services.AccountService;
+import com.mindhub.Homebanking.services.ClientService;
+import com.mindhub.Homebanking.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,32 +32,22 @@ import static java.util.stream.Collectors.toList;
 public class TransactionController {
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransactionService transactionService;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private ClientService clientService;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private AccountService accountService;
 
 
     @GetMapping("/transactions")
-    public List<TransactionDTO> getTransactions(){
-        List<Transaction> allTransactions = transactionRepository.findAll();
-
-        List<TransactionDTO> convertedList;
-        convertedList = allTransactions
-                .stream()
-                .map(currenttransaction -> new TransactionDTO(currenttransaction))
-                .collect(Collectors.toList());
-
-        return convertedList;
+    public List<TransactionDTO> getTransactions(){ return transactionService.getTransactionDTO();
     }
 
     @GetMapping("/transactions/{id}")
     public TransactionDTO getTransactionsById(@PathVariable Long id){
-        Optional<Transaction> transaction = transactionRepository.findById(id);
-        return new TransactionDTO(transaction.get());
+        return transactionService.getTransactionDTO(id);
     }
 
 
@@ -64,9 +57,9 @@ public class TransactionController {
                                             @RequestParam String toAccountNumber, @RequestParam String description,
                                             Authentication authentication) {
         // Obtener información del cliente autenticado
-        Client current = clientRepository.findByEmail(authentication.getName());
-        Account debitAccount = accountRepository.findByNumber(fromAccountNumber);
-        Account creditAccount = accountRepository.findByNumber(toAccountNumber);
+        Client current = clientService.findByEmail(authentication.getName());
+        Account debitAccount = accountService.findByNumber(fromAccountNumber);
+        Account creditAccount = accountService.findByNumber(toAccountNumber);
 
         // comprobar que los parmetros no lleguen del Front vacios/sin importe
         if(amount <= 0 || description.isEmpty()) {return new ResponseEntity<>
@@ -87,8 +80,8 @@ public class TransactionController {
 
 
         // Crear la Transacion por debito
-        Transaction transaction1 = new Transaction(DEBIT, amount * -1,"despcription", LocalDate.now());
-        transactionRepository.save(transaction1);
+        Transaction transaction1 = new Transaction(DEBIT, amount * -1,"description", LocalDate.now());
+        transactionService.newTransaction(transaction1);
         debitAccount.addTransaction(transaction1);
 
         Double balanceFromAccount = debitAccount.getBalance();
@@ -97,7 +90,7 @@ public class TransactionController {
 
         // Crear la transacion por credito
         Transaction transaction2 = new Transaction(CREDIT, amount,"description", LocalDate.now());
-        transactionRepository.save(transaction2);
+        transactionService.newTransaction(transaction2);
         creditAccount.addTransaction(transaction2);
 
         Double balanceToAccount = creditAccount.getBalance();

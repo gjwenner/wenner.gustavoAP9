@@ -34,13 +34,13 @@ public class HomebankingApplication {
 			clientRepository.save(client1);
 			clientRepository.save(client2);
 
-			LocalDate today =  LocalDate.now();
-			LocalDate tomorrow = today.plusDays(1);
+			//LocalDate today =  LocalDate.now();
+			//LocalDate tomorrow = today.plusDays(1);
 
-			Account newAccount1 = new Account("VIN0000001", today, 5000.00);
-			Account newAccount2 = new Account("VIN0000002", tomorrow, 7500.00);
-			Account newAccount3 = new Account("VIN0000003", tomorrow, 10000.00);
-			Account newAccount4 = new Account("VIN0000004", tomorrow, 15500.00);
+			Account newAccount1 = new Account("VIN0000001", LocalDate.now(), 5000.00);
+			Account newAccount2 = new Account("VIN0000002", LocalDate.now().plusDays(1), 7500.00);
+			Account newAccount3 = new Account("VIN0000003", LocalDate.now().plusDays(1), 10000.00);
+			Account newAccount4 = new Account("VIN0000004", LocalDate.now().plusDays(1), 15500.00);
 
 			client1.addAccount(newAccount1);
 			client1.addAccount(newAccount2);
@@ -68,13 +68,19 @@ public class HomebankingApplication {
 			loanRepository.save(newLoan2);
 			loanRepository.save(newLoan3);
 
-			ClientLoan clientLoan1 = new ClientLoan(60, 400000.00, client1, newLoan1);
+			ClientLoan clientLoan1 = new ClientLoan(60, 400000.00);
+			clientLoan1.setClient(client1);
+			clientLoan1.setLoan(newLoan1);
 			clientLoanRepository.save(clientLoan1);
 
-			ClientLoan clientLoan2 = new ClientLoan(12, 50000.00, client1, newLoan2);
+			ClientLoan clientLoan2 = new ClientLoan(12, 50000.00);
+			clientLoan2.setClient(client1);
+			clientLoan2.setLoan(newLoan2);
 			clientLoanRepository.save(clientLoan2);
 
-			ClientLoan clientLoan3 = new ClientLoan(24, 100000.00, client2, newLoan2);
+			ClientLoan clientLoan3 = new ClientLoan(24, 100000.00);
+			clientLoan3.setClient(client2);
+			clientLoan3.setLoan(newLoan3);
 			clientLoanRepository.save(clientLoan3);
 
 			//ClientLoan clientLoan4 = new ClientLoan(36, 200000.00, client2, newLoan3);

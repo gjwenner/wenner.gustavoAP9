@@ -2,9 +2,12 @@ package com.mindhub.Homebanking.controllers;
 
 import com.mindhub.Homebanking.dtos.AccountDTO;
 import com.mindhub.Homebanking.dtos.CardDTO;
+import com.mindhub.Homebanking.dtos.ClientDTO;
 import com.mindhub.Homebanking.models.*;
 import com.mindhub.Homebanking.repositories.AccountRepository;
 import com.mindhub.Homebanking.repositories.ClientRepository;
+import com.mindhub.Homebanking.services.AccountService;
+import com.mindhub.Homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,33 +31,22 @@ import static java.util.stream.Collectors.toList;
 public class AccountController {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @GetMapping("/accounts")
     public List<AccountDTO> getAccounts(){
-        List<Account> allAccounts = accountRepository.findAll();
-
-        List<AccountDTO> convertedList;
-        convertedList = allAccounts
-                .stream()
-                .map(currentaccount -> new AccountDTO(currentaccount))
-                .collect(Collectors.toList());
-
-        return convertedList;
-    }
-
+        return accountService.getAccountsDTO(); }
     @GetMapping("/accounts/{id}")
     public AccountDTO getAccountsById(@PathVariable Long id){
-        Optional<Account> account = accountRepository.findById(id);
-        return new AccountDTO(account.get());
+        return accountService.getAccountDTO(id) ;
     }
 
     @GetMapping("/clients/current/accounts")
     public List<AccountDTO> getAccount(Authentication authentication) {
-        Client client = this.clientRepository.findByEmail(authentication.getName());
+        Client client = this.clientService.getCurrent(authentication.getName());
         return client.getAccounts().stream().map(AccountDTO::new).collect(toList());
     }
     //Para crear un numero aleatorio
@@ -93,7 +85,7 @@ public class AccountController {
     public ResponseEntity<?> createAccount(Authentication authentication) {
 
         // Obtener información del cliente autenticado
-        Client current = clientRepository.findByEmail(authentication.getName());
+        Client current = clientService.getCurrent(authentication.getName());
 
         // Verificar si el cliente ya tiene 3 cuentas registradas
         if (current.getAccounts().size() >= 3) {
@@ -106,7 +98,7 @@ public class AccountController {
         String number = "VIN-" + random;
 
         // Verificar si el número de cuenta ya existe en la base de datos
-        while (accountRepository.findByNumber(number) != null && !accountRepository.findByNumber(number).getNumber().equals(number)) {
+        while (accountService.findByNumber(number) != null && !accountService.findByNumber(number).getNumber().equals(number)) {
             random = rand.nextInt(99999999) + 1;
             number = "VIN-" + random;
         }
@@ -118,7 +110,7 @@ public class AccountController {
         current.addAccount(account);
 
         // Guardar cuenta en la base de datos
-        accountRepository.save(account);
+        accountService.newAccount(account);
 
         // Retornar respuesta "201 creada"
         return new ResponseEntity<>("201 creada", HttpStatus.CREATED);

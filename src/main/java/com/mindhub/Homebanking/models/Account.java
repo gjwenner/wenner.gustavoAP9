@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class Account {
 
     private String number;
 
-    private LocalDate date;
+    private LocalDateTime creationDate;
 
     private Double balance;
 
@@ -32,9 +33,9 @@ public class Account {
     public Account() {
     }
 
-    public Account(String number, LocalDate date, Double balance) {
+    public Account(String number, LocalDateTime date, Double balance) {
         this.number = number;
-        this.date = date;
+        this.creationDate = date;
         this.balance = balance;
     }
 
@@ -50,12 +51,12 @@ public class Account {
         this.number = number;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Double getBalance() {

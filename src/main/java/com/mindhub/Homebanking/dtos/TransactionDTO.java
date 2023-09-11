@@ -16,7 +16,7 @@ public class TransactionDTO {
         this.id = transaction.getId();
         this.type = transaction.getType();
         this.amount = transaction.getAmount();
-        this.description = transaction.getDescriptions();
+        this.description = transaction.getDescription();
         this.date = transaction.getDate();
     }
 
@@ -32,7 +32,7 @@ public class TransactionDTO {
         return amount;
     }
 
-    public String getDescriptions() {
+    public String getDescription() {
         return description;
     }
 

@@ -104,7 +104,7 @@ public class AccountController {
         }
 
         // Crear objeto Account
-        Account account = new Account(number, LocalDate.now(), 0.00);
+        Account account = new Account(number, LocalDateTime.now(), 0.00);
 
         // Asignar cuenta al cliente
         current.addAccount(account);

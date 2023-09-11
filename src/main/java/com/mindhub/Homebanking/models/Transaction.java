@@ -22,7 +22,7 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(TransactionType type, Double amount, String descriptions, LocalDate date) {
+    public Transaction(TransactionType type, Double amount, String description, LocalDate date) {
         this.type = type;
         this.amount = amount;
         this.description = description;
@@ -53,11 +53,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getDescriptions() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescriptions(String descriptions) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

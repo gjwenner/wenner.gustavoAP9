@@ -83,15 +83,12 @@ public class LoansController {
         if(!payments.contains(loanApplicationDTO.getPayments())){
             }
 
-
-
     // Crear el prestamo solicitado
         Double totalLoan = loanApplicationDTO.getAmount() * 120/100;
         ClientLoan clientLoan = new ClientLoan(loanApplicationDTO.getPayments(),totalLoan);
         clientLoan.setClient(current);
         clientLoan.setLoan(loanApply);
         clientLoanService.newClientLoan(clientLoan);
-
 
     // Crear transaccion y actualiza el saldo de la cuenta
         Transaction transaction = new Transaction(CREDIT, loanApplicationDTO.getAmount(),"description"+" "+ "loan aproved", LocalDate.now());

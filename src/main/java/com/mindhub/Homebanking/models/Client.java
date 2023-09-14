@@ -99,7 +99,6 @@ public class Client {
         this.cards = cards;
     }
 
-
     public void addAccount(Account account){
         account.setClientId(this);
         accounts.add(account);

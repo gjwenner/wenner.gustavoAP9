@@ -11,6 +11,7 @@ import com.mindhub.Homebanking.repositories.CardRepository;
 import com.mindhub.Homebanking.repositories.ClientRepository;
 import com.mindhub.Homebanking.services.CardService;
 import com.mindhub.Homebanking.services.ClientService;
+import com.mindhub.Homebanking.utils.CardUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,28 +69,28 @@ public class CardController {
         return ResponseEntity.ok(cardDTOs);
     }
 
-    public int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
-    }
+    //public int getRandomNumber(int min, int max) {
+      //  return (int) ((Math.random() * (max - min)) + min);
+   // }
     //Para generar el Numero de Tarjeta
-    public String cardNumberG(){
-        String cardNumber = "";
-        for(int i=0;i<4;i++) {
-            int num = (getRandomNumber(1000, 9999));
-            if (i != 3) {
-                cardNumber += num + "-";
-            } else {
-                cardNumber += num;
-            }
-        }
-        return cardNumber;
-    }
+    //public String cardNumberG(){
+      //  String cardNumber = "";
+        //for(int i=0;i<4;i++) {
+          //  int num = (getRandomNumber(1000, 9999));
+            //if (i != 3) {
+ //               cardNumber += num + "-";
+ //           } else {
+ //               cardNumber += num;
+ //           }
+ //       }
+ //       return cardNumber;
+ //   }
 
     //Para generar CVV
-    public int CVV(){
-        int numcvv = (getRandomNumber(1, 999));
-        return numcvv;
-    }
+    //public int CVV(){
+    //    int numcvv = (getRandomNumber(1, 999));
+    //    return numcvv;
+    //}
 
 
     @PostMapping("/clients/current/cards")
@@ -105,7 +106,7 @@ public class CardController {
 
     //Crear el Objeto Card
         Card card = new Card(current.getFirstName()+" "+current.getLastName(),
-                cardType, cardColor, cardNumberG(), CVV() , LocalDate.now(), LocalDateTime.now().plusYears(5));
+                cardType, cardColor, CardUtil.cardNumberG(), CardUtil.CVV(), LocalDate.now(), LocalDateTime.now().plusYears(5));
 
     //Asignar la Tarjeta al cliente
         current.addCard(card);

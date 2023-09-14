@@ -46,8 +46,7 @@ public class ClientController {
     //Post para crear el cliente
     //@PostMapping("/clients")
     // Client client = clientRepository.findByEmail(); //Para verificar que el mail no este registrado
-    @RequestMapping(path = "/clients", method = RequestMethod.POST)
-
+    @PostMapping("/clients")
     public ResponseEntity<Object> register(
 
             @RequestParam String firstName, @RequestParam String lastName,
